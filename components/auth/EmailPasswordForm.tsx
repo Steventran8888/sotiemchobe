@@ -21,7 +21,7 @@ export default function EmailPasswordForm({ mode }: { mode: "login" | "register"
 
     if (mode === "register") {
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin;
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { emailRedirectTo: `${siteUrl}/auth/callback` },
@@ -29,6 +29,14 @@ export default function EmailPasswordForm({ mode }: { mode: "login" | "register"
       setLoading(false);
       if (error) {
         setError(error.message);
+        return;
+      }
+      // "Confirm email" is off in Supabase, so a session comes back right
+      // away — go straight into the app. Verification happens later via the
+      // non-blocking banner (components/auth/VerifyEmailBanner.tsx), not here.
+      if (data.session) {
+        router.push("/children");
+        router.refresh();
         return;
       }
       setNotice("Vui lòng kiểm tra email để xác nhận tài khoản.");
