@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { mergeScheduleWithRecords } from "@/lib/vaccination";
+import { ageInMonths, formatAge } from "@/lib/date";
 import type { VaccinationRecord, VaccineSchedule } from "@/lib/types";
 import VaccineTrackerList from "@/components/vaccination/VaccineTrackerList";
 import DeleteChildButton from "@/components/children/DeleteChildButton";
@@ -31,6 +32,7 @@ export default async function ChildDetailPage({
     (schedule ?? []) as VaccineSchedule[],
     (records ?? []) as VaccinationRecord[]
   );
+  const ageMonths = ageInMonths(child.dob);
 
   return (
     <div className="flex flex-1 flex-col px-6 py-6">
@@ -39,7 +41,10 @@ export default async function ChildDetailPage({
       </Link>
 
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-bold">{child.name}</h1>
+        <div>
+          <h1 className="text-xl font-bold">{child.name}</h1>
+          <p className="text-sm text-muted-foreground">{formatAge(ageMonths)}</p>
+        </div>
         <div className="flex items-center gap-3">
           <Button asChild variant="link" size="sm" className="h-auto p-0">
             <Link href={`/children/${child.id}/edit`}>Sửa</Link>
@@ -48,7 +53,7 @@ export default async function ChildDetailPage({
         </div>
       </div>
 
-      <VaccineTrackerList childId={child.id} initialRows={rows} />
+      <VaccineTrackerList childId={child.id} ageMonths={ageMonths} initialRows={rows} />
     </div>
   );
 }

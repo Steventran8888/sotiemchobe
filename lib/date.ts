@@ -18,3 +18,20 @@ export function formatDateVN(iso: string): string {
   if (!date) return "";
   return date.toLocaleDateString("vi-VN");
 }
+
+/** Age in whole months as of today. */
+export function ageInMonths(dob: string): number {
+  const birth = parseISODate(dob);
+  if (!birth) return 0;
+  const now = new Date();
+  let months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
+  if (now.getDate() < birth.getDate()) months -= 1;
+  return Math.max(months, 0);
+}
+
+export function formatAge(months: number): string {
+  if (months < 24) return `${months} tháng tuổi`;
+  const years = Math.floor(months / 12);
+  const remainder = months % 12;
+  return remainder === 0 ? `${years} tuổi` : `${years} tuổi ${remainder} tháng`;
+}

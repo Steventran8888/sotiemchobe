@@ -2,19 +2,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Child } from "@/lib/types";
+import { ageInMonths, formatAge } from "@/lib/date";
 import VerifyEmailBanner from "@/components/auth/VerifyEmailBanner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
-function calculateAge(dob: string): string {
-  const birth = new Date(dob);
-  const now = new Date();
-  let months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
-  if (now.getDate() < birth.getDate()) months -= 1;
-  if (months < 0) return "";
-  if (months < 24) return `${months} tháng tuổi`;
-  return `${Math.floor(months / 12)} tuổi`;
-}
 
 export default async function ChildrenPage() {
   const supabase = await createClient();
@@ -48,7 +39,7 @@ export default async function ChildrenPage() {
                   <Card className="transition-colors hover:ring-primary/40">
                     <CardContent>
                       <p className="font-semibold">{child.name}</p>
-                      <p className="text-sm text-muted-foreground">{calculateAge(child.dob)}</p>
+                      <p className="text-sm text-muted-foreground">{formatAge(ageInMonths(child.dob))}</p>
                     </CardContent>
                   </Card>
                 </Link>
