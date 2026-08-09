@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
 
 type Provider = "google" | "facebook" | "apple";
 
@@ -26,14 +27,15 @@ export default function OAuthButtons({ redirectPath = "/children" }: { redirectP
   return (
     <div className="flex flex-col gap-2">
       {(Object.keys(PROVIDER_LABELS) as Provider[]).map((provider) => (
-        <button
+        <Button
           key={provider}
           type="button"
+          variant="outline"
           onClick={() => signInWithProvider(provider)}
-          className="w-full rounded-lg border border-neutral-300 py-2.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50"
+          className="h-10 w-full"
         >
           Tiếp tục với {PROVIDER_LABELS[provider]}
-        </button>
+        </Button>
       ))}
     </div>
   );

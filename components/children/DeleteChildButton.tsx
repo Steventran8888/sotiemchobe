@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
 
 export default function DeleteChildButton({ childId, childName }: { childId: string; childName: string }) {
   const router = useRouter();
@@ -19,13 +20,15 @@ export default function DeleteChildButton({ childId, childName }: { childId: str
   }
 
   return (
-    <button
+    <Button
       type="button"
+      variant="link"
+      size="sm"
       onClick={handleDelete}
       disabled={loading}
-      className="text-sm font-medium text-red-600 hover:underline disabled:opacity-60"
+      className="h-auto p-0 text-destructive"
     >
       {loading ? "Đang xóa..." : "Xóa hồ sơ"}
-    </button>
+    </Button>
   );
 }

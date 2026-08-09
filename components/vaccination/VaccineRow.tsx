@@ -4,11 +4,20 @@ import { useState } from "react";
 import type { VaccinationRecord, VaccineSchedule } from "@/lib/types";
 import CategoryBadge from "@/components/vaccination/CategoryBadge";
 import StatusEditor from "@/components/vaccination/StatusEditor";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
-const STATUS_PILL: Record<string, string> = {
-  planned: "bg-neutral-100 text-neutral-500",
-  done: "bg-green-100 text-green-700",
-  skipped: "bg-neutral-200 text-neutral-500 line-through",
+const STATUS_VARIANT: Record<string, "secondary" | "default" | "outline"> = {
+  planned: "secondary",
+  done: "default",
+  skipped: "outline",
 };
 
 const STATUS_LABEL: Record<string, string> = {
@@ -28,46 +37,53 @@ export default function VaccineRow({
   record: VaccinationRecord | null;
   onSaved: (record: VaccinationRecord) => void;
 }) {
-  const [editing, setEditing] = useState(false);
+  const [open, setOpen] = useState(false);
   const status = record?.status ?? "planned";
 
   return (
-    <li className="rounded-xl border border-neutral-200 px-4 py-3">
-      <button
-        type="button"
-        onClick={() => setEditing((v) => !v)}
-        className="flex w-full items-start justify-between gap-3 text-left"
-      >
-        <div>
-          <p className="font-medium text-neutral-900">
-            {schedule.name} <span className="text-neutral-400">· mũi {schedule.dose_number}</span>
-          </p>
-          <p className="text-xs text-neutral-500">{schedule.disease} · {schedule.age_recommended}</p>
-          <div className="mt-1">
-            <CategoryBadge category={schedule.category} />
-          </div>
-        </div>
-        <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_PILL[status]}`}>
-          {STATUS_LABEL[status]}
-        </span>
-      </button>
-
-      {record?.date_given && (
-        <p className="mt-1 text-xs text-neutral-400">
-          Tiêm ngày {record.date_given}
-          {record.location ? ` tại ${record.location}` : ""}
-        </p>
-      )}
-
-      {editing && (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Card
+          className={`cursor-pointer transition-colors hover:ring-primary/40 ${
+            status === "skipped" ? "opacity-60" : ""
+          }`}
+        >
+          <CardContent className="flex items-start justify-between gap-3">
+            <div>
+              <p className="font-medium">
+                {schedule.name} <span className="text-muted-foreground">· mũi {schedule.dose_number}</span>
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {schedule.disease} · {schedule.age_recommended}
+              </p>
+              <div className="mt-1">
+                <CategoryBadge category={schedule.category} />
+              </div>
+              {record?.date_given && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Tiêm ngày {record.date_given}
+                  {record.location ? ` tại ${record.location}` : ""}
+                </p>
+              )}
+            </div>
+            <Badge variant={STATUS_VARIANT[status]} className="shrink-0">
+              {STATUS_LABEL[status]}
+            </Badge>
+          </CardContent>
+        </Card>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{schedule.name}</DialogTitle>
+        </DialogHeader>
         <StatusEditor
           childId={childId}
           vaccineScheduleId={schedule.id}
           record={record}
           onSaved={onSaved}
-          onClose={() => setEditing(false)}
+          onClose={() => setOpen(false)}
         />
-      )}
-    </li>
+      </DialogContent>
+    </Dialog>
   );
 }

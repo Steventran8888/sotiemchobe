@@ -5,6 +5,7 @@ import { mergeScheduleWithRecords } from "@/lib/vaccination";
 import type { VaccinationRecord, VaccineSchedule } from "@/lib/types";
 import VaccineTrackerList from "@/components/vaccination/VaccineTrackerList";
 import DeleteChildButton from "@/components/children/DeleteChildButton";
+import { Button } from "@/components/ui/button";
 
 export default async function ChildDetailPage({
   params,
@@ -33,16 +34,16 @@ export default async function ChildDetailPage({
 
   return (
     <div className="flex flex-1 flex-col px-6 py-6">
-      <Link href="/children" className="mb-4 text-sm text-neutral-500 hover:underline">
+      <Link href="/children" className="mb-4 text-sm text-muted-foreground hover:underline">
         ← Quay lại
       </Link>
 
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-neutral-900">{child.name}</h1>
+        <h1 className="text-xl font-bold">{child.name}</h1>
         <div className="flex items-center gap-3">
-          <Link href={`/children/${child.id}/edit`} className="text-sm text-brand hover:underline">
-            Sửa
-          </Link>
+          <Button asChild variant="link" size="sm" className="h-auto p-0">
+            <Link href={`/children/${child.id}/edit`}>Sửa</Link>
+          </Button>
           <DeleteChildButton childId={child.id} childName={child.name} />
         </div>
       </div>

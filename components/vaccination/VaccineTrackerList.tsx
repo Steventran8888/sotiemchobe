@@ -23,7 +23,7 @@ export default function VaccineTrackerList({
   }
 
   return (
-    <ul className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3">
       {rows.map(({ schedule, record }) => (
         <VaccineRow
           key={schedule.id}
@@ -33,6 +33,6 @@ export default function VaccineTrackerList({
           onSaved={handleSaved}
         />
       ))}
-    </ul>
+    </div>
   );
 }

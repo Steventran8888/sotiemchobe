@@ -1,47 +1,57 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import AuthMethodTabs, { type AuthMethod } from "@/components/auth/AuthMethodTabs";
 import EmailPasswordForm from "@/components/auth/EmailPasswordForm";
 import PhonePasswordForm from "@/components/auth/PhonePasswordForm";
 import OAuthButtons from "@/components/auth/OAuthButtons";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Separator } from "@/components/ui/separator";
 
 export default function LoginPage() {
-  const [method, setMethod] = useState<AuthMethod>("email");
-
   return (
     <div className="flex flex-1 flex-col justify-center px-6 py-10">
-      <h1 className="mb-1 text-2xl font-bold text-neutral-900">Đăng nhập</h1>
-      <p className="mb-6 text-sm text-neutral-500">Sổ Tiêm Cho Bé</p>
+      <Card className="border-none shadow-none ring-0">
+        <CardHeader>
+          <CardTitle className="text-2xl">Đăng nhập</CardTitle>
+          <CardDescription>Sổ Tiêm Cho Bé</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="email">
+            <TabsList className="mb-4 w-full">
+              <TabsTrigger value="email">Email</TabsTrigger>
+              <TabsTrigger value="phone">Số điện thoại</TabsTrigger>
+            </TabsList>
+            <TabsContent value="email">
+              <EmailPasswordForm mode="login" />
+            </TabsContent>
+            <TabsContent value="phone">
+              <PhonePasswordForm mode="login" />
+            </TabsContent>
+          </Tabs>
 
-      <AuthMethodTabs active={method} onChange={setMethod} />
-      {method === "email" ? (
-        <EmailPasswordForm mode="login" />
-      ) : (
-        <PhonePasswordForm mode="login" />
-      )}
+          <div className="mt-3 text-right">
+            <Link href="/forgot-password" className="text-sm text-primary hover:underline">
+              Quên mật khẩu?
+            </Link>
+          </div>
 
-      <div className="mt-3 text-right">
-        <Link href="/forgot-password" className="text-sm text-brand hover:underline">
-          Quên mật khẩu?
-        </Link>
-      </div>
+          <div className="my-6 flex items-center gap-3">
+            <Separator className="flex-1" />
+            <span className="text-xs text-muted-foreground">hoặc</span>
+            <Separator className="flex-1" />
+          </div>
 
-      <div className="my-6 flex items-center gap-3">
-        <div className="h-px flex-1 bg-neutral-200" />
-        <span className="text-xs text-neutral-400">hoặc</span>
-        <div className="h-px flex-1 bg-neutral-200" />
-      </div>
+          <OAuthButtons redirectPath="/children" />
 
-      <OAuthButtons redirectPath="/children" />
-
-      <p className="mt-6 text-center text-sm text-neutral-500">
-        Chưa có tài khoản?{" "}
-        <Link href="/register" className="font-medium text-brand hover:underline">
-          Đăng ký
-        </Link>
-      </p>
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            Chưa có tài khoản?{" "}
+            <Link href="/register" className="font-medium text-primary hover:underline">
+              Đăng ký
+            </Link>
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }

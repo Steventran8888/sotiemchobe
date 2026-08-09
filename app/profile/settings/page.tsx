@@ -19,21 +19,21 @@ export default async function ProfileSettingsPage() {
   return (
     <div className="flex flex-1 flex-col px-6 py-6">
       <div className="mb-6 flex items-center gap-3">
-        <Link href="/children" className="text-sm text-neutral-500 hover:underline">
+        <Link href="/children" className="text-sm text-muted-foreground hover:underline">
           ← Quay lại
         </Link>
       </div>
 
-      <h1 className="mb-1 text-xl font-bold text-neutral-900">Cài đặt hồ sơ</h1>
-      <p className="mb-6 text-sm text-neutral-500">{getDisplayIdentity(user)}</p>
+      <h1 className="mb-1 text-xl font-bold">Cài đặt hồ sơ</h1>
+      <p className="mb-6 text-sm text-muted-foreground">{getDisplayIdentity(user)}</p>
 
       <section className="mb-6">
-        <h2 className="mb-2 text-sm font-semibold text-neutral-700">Tài khoản liên kết</h2>
+        <h2 className="mb-2 text-sm font-semibold">Tài khoản liên kết</h2>
         <LinkedAccounts />
       </section>
 
       <section className="mb-6">
-        <h2 className="mb-2 text-sm font-semibold text-neutral-700">Đổi mật khẩu</h2>
+        <h2 className="mb-2 text-sm font-semibold">Đổi mật khẩu</h2>
         <ChangePasswordForm />
       </section>
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ChildForm from "@/components/children/ChildForm";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function EditChildPage({
   params,
@@ -19,11 +20,17 @@ export default async function EditChildPage({
 
   return (
     <div className="flex flex-1 flex-col px-6 py-6">
-      <Link href={`/children/${child.id}`} className="mb-4 text-sm text-neutral-500 hover:underline">
+      <Link href={`/children/${child.id}`} className="mb-4 text-sm text-muted-foreground hover:underline">
         ← Quay lại
       </Link>
-      <h1 className="mb-6 text-xl font-bold text-neutral-900">Sửa thông tin bé</h1>
-      <ChildForm child={child} />
+      <Card className="border-none shadow-none ring-0">
+        <CardHeader>
+          <CardTitle>Sửa thông tin bé</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ChildForm child={child} />
+        </CardContent>
+      </Card>
     </div>
   );
 }

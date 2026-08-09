@@ -4,6 +4,9 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { normalizePhoneVN, phoneToFakeEmail } from "@/lib/phone";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function PhonePasswordForm({ mode }: { mode: "login" | "register" }) {
   const router = useRouter();
@@ -55,37 +58,33 @@ export default function PhonePasswordForm({ mode }: { mode: "login" | "register"
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <div>
-        <label className="mb-1 block text-sm font-medium text-neutral-700">Số điện thoại</label>
-        <input
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="phone">Số điện thoại</Label>
+        <Input
+          id="phone"
           type="tel"
           required
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
           placeholder="0912 345 678"
         />
       </div>
-      <div>
-        <label className="mb-1 block text-sm font-medium text-neutral-700">Mật khẩu</label>
-        <input
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="phone-password">Mật khẩu</Label>
+        <Input
+          id="phone-password"
           type="password"
           required
           minLength={6}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
           placeholder="••••••••"
         />
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <button
-        type="submit"
-        disabled={loading}
-        className="mt-1 w-full rounded-lg bg-brand py-2.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
-      >
+      {error && <p className="text-sm text-destructive">{error}</p>}
+      <Button type="submit" disabled={loading} className="mt-1 h-10 w-full">
         {loading ? "Đang xử lý..." : mode === "login" ? "Đăng nhập" : "Đăng ký"}
-      </button>
+      </Button>
     </form>
   );
 }

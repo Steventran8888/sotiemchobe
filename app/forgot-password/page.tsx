@@ -3,9 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import AuthMethodTabs, { type AuthMethod } from "@/components/auth/AuthMethodTabs";
 import { createClient } from "@/lib/supabase/client";
 import { normalizePhoneVN } from "@/lib/phone";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 function EmailForgotForm() {
   const [email, setEmail] = useState("");
@@ -26,7 +30,7 @@ function EmailForgotForm() {
 
   if (sent) {
     return (
-      <p className="text-sm text-neutral-600">
+      <p className="text-sm text-muted-foreground">
         Nếu email này đã đăng ký, bạn sẽ nhận được đường dẫn đặt lại mật khẩu qua email.
       </p>
     );
@@ -34,21 +38,16 @@ function EmailForgotForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <input
+      <Input
         type="email"
         required
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="ban@vidu.com"
-        className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
       />
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full rounded-lg bg-brand py-2.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
-      >
+      <Button type="submit" disabled={loading} className="h-10 w-full">
         {loading ? "Đang gửi..." : "Gửi liên kết đặt lại mật khẩu"}
-      </button>
+      </Button>
     </form>
   );
 }
@@ -114,81 +113,83 @@ function PhoneForgotForm() {
   if (step === "request") {
     return (
       <form onSubmit={requestCode} className="flex flex-col gap-3">
-        <input
+        <Input
           type="tel"
           required
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder="0912 345 678"
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
         />
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-brand py-2.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
-        >
+        {error && <p className="text-sm text-destructive">{error}</p>}
+        <Button type="submit" disabled={loading} className="h-10 w-full">
           {loading ? "Đang gửi..." : "Gửi mã OTP"}
-        </button>
+        </Button>
       </form>
     );
   }
 
   return (
     <form onSubmit={verifyAndReset} className="flex flex-col gap-3">
-      {notice && <p className="text-sm text-neutral-600">{notice}</p>}
-      <div>
-        <label className="mb-1 block text-sm font-medium text-neutral-700">Mã OTP</label>
-        <input
+      {notice && <p className="text-sm text-muted-foreground">{notice}</p>}
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="otp">Mã OTP</Label>
+        <Input
+          id="otp"
           type="text"
           required
           value={otp}
           onChange={(e) => setOtp(e.target.value)}
           placeholder="123456"
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
         />
       </div>
-      <div>
-        <label className="mb-1 block text-sm font-medium text-neutral-700">Mật khẩu mới</label>
-        <input
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="new-password">Mật khẩu mới</Label>
+        <Input
+          id="new-password"
           type="password"
           required
           minLength={6}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
         />
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full rounded-lg bg-brand py-2.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
-      >
+      {error && <p className="text-sm text-destructive">{error}</p>}
+      <Button type="submit" disabled={loading} className="h-10 w-full">
         {loading ? "Đang xử lý..." : "Đặt lại mật khẩu"}
-      </button>
+      </Button>
     </form>
   );
 }
 
 export default function ForgotPasswordPage() {
-  const [method, setMethod] = useState<AuthMethod>("email");
-
   return (
     <div className="flex flex-1 flex-col justify-center px-6 py-10">
-      <h1 className="mb-1 text-2xl font-bold text-neutral-900">Quên mật khẩu</h1>
-      <p className="mb-6 text-sm text-neutral-500">
-        Chọn cách bạn đã dùng để đăng ký tài khoản.
-      </p>
+      <Card className="border-none shadow-none ring-0">
+        <CardHeader>
+          <CardTitle className="text-2xl">Quên mật khẩu</CardTitle>
+          <CardDescription>Chọn cách bạn đã dùng để đăng ký tài khoản.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs defaultValue="email">
+            <TabsList className="mb-4 w-full">
+              <TabsTrigger value="email">Email</TabsTrigger>
+              <TabsTrigger value="phone">Số điện thoại</TabsTrigger>
+            </TabsList>
+            <TabsContent value="email">
+              <EmailForgotForm />
+            </TabsContent>
+            <TabsContent value="phone">
+              <PhoneForgotForm />
+            </TabsContent>
+          </Tabs>
 
-      <AuthMethodTabs active={method} onChange={setMethod} />
-      {method === "email" ? <EmailForgotForm /> : <PhoneForgotForm />}
-
-      <p className="mt-6 text-center text-sm text-neutral-500">
-        <Link href="/login" className="font-medium text-brand hover:underline">
-          Quay lại đăng nhập
-        </Link>
-      </p>
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            <Link href="/login" className="font-medium text-primary hover:underline">
+              Quay lại đăng nhập
+            </Link>
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }

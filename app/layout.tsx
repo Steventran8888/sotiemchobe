@@ -1,5 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { Inter } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "Sổ Tiêm Cho Bé",
@@ -20,9 +24,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi">
-      <body className="bg-neutral-100 min-h-screen">
-        <div className="max-w-md mx-auto min-h-screen bg-white shadow-sm flex flex-col">
+    <html lang="vi" className={cn("font-sans", inter.variable)}>
+      <body className="min-h-screen bg-muted">
+        <div className="mx-auto flex min-h-screen max-w-md flex-col bg-background shadow-sm">
           {children}
         </div>
       </body>

@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 type Provider = "google" | "facebook" | "apple";
 const PROVIDERS: Provider[] = ["google", "facebook", "apple"];
@@ -38,7 +40,7 @@ export default function LinkedAccounts() {
   }
 
   if (loading) {
-    return <p className="text-sm text-neutral-400">Đang tải...</p>;
+    return <p className="text-sm text-muted-foreground">Đang tải...</p>;
   }
 
   return (
@@ -46,28 +48,27 @@ export default function LinkedAccounts() {
       {PROVIDERS.map((provider) => {
         const isLinked = linked.has(provider);
         return (
-          <div
-            key={provider}
-            className="flex items-center justify-between rounded-lg border border-neutral-200 px-3 py-2.5"
-          >
-            <span className="text-sm font-medium text-neutral-700">
-              {PROVIDER_LABELS[provider]}
-            </span>
-            {isLinked ? (
-              <span className="text-xs font-medium text-brand-dark">Đã liên kết</span>
-            ) : (
-              <button
-                type="button"
-                onClick={() => linkProvider(provider)}
-                className="text-xs font-medium text-brand hover:underline"
-              >
-                Liên kết
-              </button>
-            )}
-          </div>
+          <Card key={provider}>
+            <CardContent className="flex items-center justify-between">
+              <span className="text-sm font-medium">{PROVIDER_LABELS[provider]}</span>
+              {isLinked ? (
+                <span className="text-xs font-medium text-primary">Đã liên kết</span>
+              ) : (
+                <Button
+                  type="button"
+                  variant="link"
+                  size="sm"
+                  onClick={() => linkProvider(provider)}
+                  className="h-auto p-0"
+                >
+                  Liên kết
+                </Button>
+              )}
+            </CardContent>
+          </Card>
         );
       })}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
     </div>
   );
 }

@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -27,28 +30,28 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="flex flex-1 flex-col justify-center px-6 py-10">
-      <h1 className="mb-1 text-2xl font-bold text-neutral-900">Đặt mật khẩu mới</h1>
-      <p className="mb-6 text-sm text-neutral-500">Nhập mật khẩu mới cho tài khoản của bạn.</p>
-
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          type="password"
-          required
-          minLength={6}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Mật khẩu mới"
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
-        />
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-brand py-2.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
-        >
-          {loading ? "Đang lưu..." : "Lưu mật khẩu mới"}
-        </button>
-      </form>
+      <Card className="border-none shadow-none ring-0">
+        <CardHeader>
+          <CardTitle className="text-2xl">Đặt mật khẩu mới</CardTitle>
+          <CardDescription>Nhập mật khẩu mới cho tài khoản của bạn.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+            <Input
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Mật khẩu mới"
+            />
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <Button type="submit" disabled={loading} className="h-10 w-full">
+              {loading ? "Đang lưu..." : "Lưu mật khẩu mới"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

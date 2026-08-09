@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { isInternalFakeEmail } from "@/lib/phone";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function VerifyEmailBanner() {
   const supabase = createClient();
@@ -87,44 +89,47 @@ export default function VerifyEmailBanner() {
   if (!email || dismissed) return null;
 
   return (
-    <div className="border-b border-amber-200 bg-amber-50 px-4 py-2.5 text-sm">
+    <div className="border-b border-primary/20 bg-primary/5 px-4 py-2.5 text-sm">
       {!expanded ? (
         <div className="flex items-center justify-between gap-2">
-          <span className="text-amber-800">Bạn chưa xác thực email.</span>
+          <span className="text-foreground/80">Bạn chưa xác thực email.</span>
           <div className="flex items-center gap-3">
-            <button
+            <Button
               type="button"
+              variant="link"
               onClick={() => setExpanded(true)}
-              className="font-medium text-amber-900 hover:underline"
+              className="h-auto p-0 text-primary"
             >
               Xác thực ngay
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="ghost"
+              size="icon-sm"
               onClick={() => setDismissed(true)}
-              className="text-amber-600 hover:text-amber-900"
               aria-label="Đóng"
             >
               ✕
-            </button>
+            </Button>
           </div>
         </div>
       ) : (
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
-            <span className="text-amber-800">Nhập mã 6 số đã gửi tới {email}</span>
-            <button
+            <span className="text-foreground/80">Nhập mã 6 số đã gửi tới {email}</span>
+            <Button
               type="button"
+              variant="ghost"
+              size="icon-sm"
               onClick={() => setExpanded(false)}
-              className="text-amber-600 hover:text-amber-900"
               aria-label="Đóng"
             >
               ✕
-            </button>
+            </Button>
           </div>
           <div className="flex gap-2">
             {digits.map((d, i) => (
-              <input
+              <Input
                 key={i}
                 ref={(el) => {
                   inputRefs.current[i] = el;
@@ -136,29 +141,26 @@ export default function VerifyEmailBanner() {
                 onChange={(e) => setDigit(i, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(i, e)}
                 onPaste={handlePaste}
-                className="h-10 w-10 rounded-md border border-amber-300 text-center text-lg focus:border-brand focus:outline-none"
+                className="h-10 w-10 text-center text-lg"
               />
             ))}
           </div>
-          {error && <p className="text-xs text-red-600">{error}</p>}
-          {notice && <p className="text-xs text-brand-dark">{notice}</p>}
+          {error && <p className="text-xs text-destructive">{error}</p>}
+          {notice && <p className="text-xs text-primary">{notice}</p>}
           <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={handleVerify}
-              disabled={loading}
-              className="rounded-md bg-brand px-3 py-1.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
-            >
+            <Button type="button" size="sm" onClick={handleVerify} disabled={loading}>
               {loading ? "Đang xác nhận..." : "Xác nhận"}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="link"
+              size="sm"
               onClick={handleResend}
               disabled={resending}
-              className="text-sm font-medium text-amber-900 hover:underline disabled:opacity-60"
+              className="h-auto p-0 text-primary"
             >
               {resending ? "Đang gửi..." : "Gửi lại mã"}
-            </button>
+            </Button>
           </div>
         </div>
       )}

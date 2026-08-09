@@ -4,6 +4,19 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { Child } from "@/lib/types";
+import { dateToISO, formatDateVN, parseISODate } from "@/lib/date";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function ChildForm({ child }: { child?: Child }) {
   const router = useRouter();
@@ -59,48 +72,64 @@ export default function ChildForm({ child }: { child?: Child }) {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <div>
-        <label className="mb-1 block text-sm font-medium text-neutral-700">Tên bé</label>
-        <input
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="child-name">Tên bé</Label>
+        <Input
+          id="child-name"
           type="text"
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
           placeholder="Nguyễn Văn A"
         />
       </div>
-      <div>
-        <label className="mb-1 block text-sm font-medium text-neutral-700">Ngày sinh</label>
-        <input
-          type="date"
-          required
-          value={dob}
-          onChange={(e) => setDob(e.target.value)}
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
-        />
+      <div className="flex flex-col gap-1.5">
+        <Label>Ngày sinh</Label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-10 w-full justify-start font-normal"
+            >
+              {dob ? formatDateVN(dob) : "Chọn ngày sinh"}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="start" className="w-auto p-0">
+            <Calendar
+              mode="single"
+              selected={parseISODate(dob)}
+              onSelect={(date) => date && setDob(dateToISO(date))}
+              captionLayout="dropdown"
+              defaultMonth={parseISODate(dob)}
+              disabled={{ after: new Date() }}
+            />
+          </PopoverContent>
+        </Popover>
       </div>
-      <div>
-        <label className="mb-1 block text-sm font-medium text-neutral-700">Giới tính</label>
-        <select
-          value={gender ?? ""}
-          onChange={(e) => setGender((e.target.value || null) as Child["gender"])}
-          className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm focus:border-brand focus:outline-none"
+      <div className="flex flex-col gap-1.5">
+        <Label>Giới tính</Label>
+        <Select
+          value={gender ?? "unknown"}
+          onValueChange={(value) =>
+            setGender(value === "unknown" ? null : (value as Child["gender"]))
+          }
         >
-          <option value="">Không rõ</option>
-          <option value="male">Bé trai</option>
-          <option value="female">Bé gái</option>
-          <option value="other">Khác</option>
-        </select>
+          <SelectTrigger className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="unknown">Không rõ</SelectItem>
+            <SelectItem value="male">Bé trai</SelectItem>
+            <SelectItem value="female">Bé gái</SelectItem>
+            <SelectItem value="other">Khác</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <button
-        type="submit"
-        disabled={loading}
-        className="mt-1 w-full rounded-lg bg-brand py-2.5 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
-      >
+      {error && <p className="text-sm text-destructive">{error}</p>}
+      <Button type="submit" disabled={loading} className="mt-1 h-10 w-full">
         {loading ? "Đang lưu..." : child ? "Lưu thay đổi" : "Thêm bé"}
-      </button>
+      </Button>
     </form>
   );
 }
